@@ -1,0 +1,5 @@
+# Server Port for the BFF
+PORT=3000
+
+# URLs for your downstream Microservices
+USER_SERVICE_URL=

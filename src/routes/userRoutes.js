@@ -1,24 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const userService = require('../components/userService');
+const userService = require('../services/userService');
 const { requireAuth } = require('../middleware/authMiddleware');
 
-const WEB_API_PREFIX = '/api';
-
-// --- PUBLIC ROUTES (Example) ---
-// This route is not protected and can be accessed by anyone.
-router.get(`${WEB_API_PREFIX}/status`, (req, res) => {
-    res.status(200).json({ status: 'BFF is running' });
-});
-
-// --- PRIVATE (PROTECTED) ROUTES ---
-// All routes below require a valid Authorization header.
-
 /**
- * Route: GET /api/currentUser/profile
+ * Route: GET /currentUser/profile
  * Description: Aggregates user profile and addresses into one call.
  */
-router.get(`${WEB_API_PREFIX}/currentUser/profile`, requireAuth, async (req, res, next) => {
+router.get('/currentUser/profile', requireAuth, async (req, res, next) => {
   try {
     const authToken = req.headers.authorization;
     
@@ -35,9 +24,9 @@ router.get(`${WEB_API_PREFIX}/currentUser/profile`, requireAuth, async (req, res
 });
 
 /**
- * Route: POST /api/currentUser/addresses
+ * Route: POST /currentUser/addresses
  */
-router.post(`${WEB_API_PREFIX}/currentUser/addresses`, requireAuth, async (req, res, next) => {
+router.post('/currentUser/addresses', requireAuth, async (req, res, next) => {
   try {
     const authToken = req.headers.authorization;
     const newAddress = await userService.addMyAddress(authToken, req.body);
@@ -48,9 +37,9 @@ router.post(`${WEB_API_PREFIX}/currentUser/addresses`, requireAuth, async (req, 
 });
 
 /**
- * Route: PUT /api/currentUser/addresses/:addressId
+ * Route: PUT /currentUser/addresses/:addressId
  */
-router.put(`${WEB_API_PREFIX}/currentUser/addresses/:addressId`, requireAuth, async (req, res, next) => {
+router.put('/currentUser/addresses/:addressId', requireAuth, async (req, res, next) => {
     try {
         const authToken = req.headers.authorization;
         const updatedAddress = await userService.updateMyAddress(authToken, req.params.addressId, req.body);
@@ -61,9 +50,9 @@ router.put(`${WEB_API_PREFIX}/currentUser/addresses/:addressId`, requireAuth, as
 });
 
 /**
- * Route: DELETE /api/currentUser/addresses/:addressId
+ * Route: DELETE /currentUser/addresses/:addressId
  */
-router.delete(`${WEB_API_PREFIX}/currentUser/addresses/:addressId`, requireAuth, async (req, res, next) => {
+router.delete('/currentUser/addresses/:addressId', requireAuth, async (req, res, next) => {
     try {
         const authToken = req.headers.authorization;
         const result = await userService.deleteMyAddress(authToken, req.params.addressId);

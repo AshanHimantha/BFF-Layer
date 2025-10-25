@@ -1,6 +1,6 @@
 require('dotenv').config();
 const express = require('express');
-const webRoutes = require('./routes/webRoutes');
+const routes = require('./routes');
 const errorHandler = require('./utils/errorHandler');
 
 const app = express();
@@ -14,8 +14,8 @@ app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok', service: 'BFF Layer' });
 });
 
-// Mount your web application routes
-app.use('/', webRoutes);
+// Mount your organized routes
+app.use('/', routes);
 
 // Centralized Error Handling Middleware (must be last)
 app.use(errorHandler);

@@ -1,4 +1,4 @@
-const createApiClient = require('../services/apiClient');
+const createApiClient = require('../utils/apiClient');
 
 const userServiceClient = createApiClient(process.env.USER_SERVICE_URL);
 

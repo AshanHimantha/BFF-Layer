@@ -10,7 +10,7 @@ const userRoutes = require('./userRoutes');
 
 // --- PUBLIC ROUTES ---
 router.get(`${API_PREFIX}/status`, (req, res) => {
-    res.status(200).json({ status: 'BFF is running' });
+    res.status(200).json({ status: 'BFF is running', api: API_PREFIX });
 });
 
 // --- PROTECTED ROUTES ---

@@ -15,7 +15,7 @@ router.get('/search', requireAuth, async (req, res, next) => {
   }
 });
 
-// GET /api/users?limit=20&nextToken=...
+
 router.get('/', requireAuth, async (req, res, next) => {
   try {
     const authToken = req.headers.authorization;
@@ -29,7 +29,7 @@ router.get('/', requireAuth, async (req, res, next) => {
   }
 });
 
-// GET /api/users/:userId
+
 router.get('/:userId', requireAuth, async (req, res, next) => {
   try {
     const authToken = req.headers.authorization;
@@ -40,7 +40,7 @@ router.get('/:userId', requireAuth, async (req, res, next) => {
   }
 });
 
-// POST /api/v1/users  (create admin user)
+
 router.post('/', requireAuth, async (req, res, next) => {
   try {
     const authToken = req.headers.authorization;
@@ -51,11 +51,11 @@ router.post('/', requireAuth, async (req, res, next) => {
   }
 });
 
-// PUT /api/v1/users/:userId/role
-router.put('/:userId/role', requireAuth, async (req, res, next) => {
+
+router.put('/:userId', requireAuth, async (req, res, next) => {
   try {
     const authToken = req.headers.authorization;
-    const rolesBody = req.body; // expecting { roles: ["ROLE1","ROLE2"] }
+    const rolesBody = req.body; 
     await userService.updateUserRoles(authToken, req.params.userId, rolesBody);
     res.status(200).json({ success: true, message: 'User roles updated successfully' });
   } catch (error) {
@@ -63,7 +63,7 @@ router.put('/:userId/role', requireAuth, async (req, res, next) => {
   }
 });
 
-// PUT /api/v1/users/:userId/status
+
 router.put('/:userId/status', requireAuth, async (req, res, next) => {
   try {
     const authToken = req.headers.authorization;
@@ -75,9 +75,7 @@ router.put('/:userId/status', requireAuth, async (req, res, next) => {
   }
 });
 
-// ------------------ CURRENT USER ROUTES ------------------
 
-// GET /api/v1/users/currentUser
 router.get('/currentUser', requireAuth, async (req, res, next) => {
   try {
     const authToken = req.headers.authorization;
@@ -88,7 +86,7 @@ router.get('/currentUser', requireAuth, async (req, res, next) => {
   }
 });
 
-// GET /api/v1/users/currentUser/addresses
+
 router.get('/currentUser/addresses', requireAuth, async (req, res, next) => {
   try {
     const authToken = req.headers.authorization;
@@ -99,7 +97,7 @@ router.get('/currentUser/addresses', requireAuth, async (req, res, next) => {
   }
 });
 
-// POST /api/v1/users/currentUser/addresses
+
 router.post('/currentUser/addresses', requireAuth, async (req, res, next) => {
   try {
     const authToken = req.headers.authorization;
@@ -110,7 +108,7 @@ router.post('/currentUser/addresses', requireAuth, async (req, res, next) => {
   }
 });
 
-// PUT /api/v1/users/currentUser/addresses/:addressId
+
 router.put('/currentUser/addresses/:addressId', requireAuth, async (req, res, next) => {
   try {
     const authToken = req.headers.authorization;
@@ -121,7 +119,7 @@ router.put('/currentUser/addresses/:addressId', requireAuth, async (req, res, ne
   }
 });
 
-// DELETE /api/v1/users/currentUser/addresses/:addressId
+
 router.delete('/currentUser/addresses/:addressId', requireAuth, async (req, res, next) => {
   try {
     const authToken = req.headers.authorization;

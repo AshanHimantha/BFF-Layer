@@ -13,7 +13,18 @@ const errorHandler = (err, req, res, next) => {
             // Case 1: The downstream service RESPONDED with an error (4xx, 5xx)
             // Example: Invalid token (401), or a server error in the Spring API (500)
             statusCode = err.response.status;
-            message = `Downstream service responded with an error.`;
+            
+            // Extract the message from the backend response
+            const backendData = err.response.data;
+            if (backendData && backendData.message) {
+                // Use the backend's message directly
+                message = backendData.message;
+            } else if (typeof backendData === 'string') {
+                message = backendData;
+            } else {
+                message = `Downstream service responded with an error.`;
+            }
+            
             console.error(`[Downstream Error] Status: ${statusCode}, URL: ${err.config.url}, Data:`, err.response.data);
         } else if (err.request) {
             // Case 2: The request was made, but NO RESPONSE was received

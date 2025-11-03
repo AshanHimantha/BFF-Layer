@@ -1,7 +1,11 @@
 const express = require('express');
 const router = express.Router();
+const multer = require('multer');
 const categoryService = require('../services/categoryService');
 const { requireAuth } = require('../middleware/authMiddleware');
+
+// Configure multer to use memory storage
+const upload = multer({ storage: multer.memoryStorage() });
 
 // GET /api/categories - Get all categories with pagination
 router.get('/', requireAuth, async (req, res, next) => {
@@ -30,10 +34,10 @@ router.get('/:categoryId', requireAuth, async (req, res, next) => {
 });
 
 // POST /api/categories - Create new category (SuperAdmins only)
-router.post('/', requireAuth, async (req, res, next) => {
+router.post('/', requireAuth, upload.single('image'), async (req, res, next) => {
   try {
     const authToken = req.headers.authorization;
-    const createdCategory = await categoryService.createCategory(authToken, req.body);
+    const createdCategory = await categoryService.createCategory(authToken, req.body, req.file);
     res.status(201).json({ success: true, data: createdCategory });
   } catch (error) {
     next(error);
@@ -41,10 +45,10 @@ router.post('/', requireAuth, async (req, res, next) => {
 });
 
 // PUT /api/categories/:categoryId - Update category (SuperAdmins only)
-router.put('/:categoryId', requireAuth, async (req, res, next) => {
+router.put('/:categoryId', requireAuth, upload.single('image'), async (req, res, next) => {
   try {
     const authToken = req.headers.authorization;
-    const updatedCategory = await categoryService.updateCategory(authToken, req.params.categoryId, req.body);
+    const updatedCategory = await categoryService.updateCategory(authToken, req.params.categoryId, req.body, req.file);
     res.status(200).json({ success: true, data: updatedCategory });
   } catch (error) {
     next(error);

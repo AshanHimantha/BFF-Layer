@@ -6,7 +6,8 @@ const API_PREFIX = '/api';
 // Import route modules
 const userRoutes = require('./userRoutes');
 const categoryRoutes = require('./categoryRoutes');
-// const productRoutes = require('./productRoutes');
+const categoryTypeRoutes = require('./categoryTypeRoutes');
+const productRoutes = require('./productRoutes');
 // const orderRoutes = require('./orderRoutes');
 
 // --- PUBLIC ROUTES ---
@@ -17,7 +18,8 @@ router.get(`${API_PREFIX}/status`, (req, res) => {
 // --- PROTECTED ROUTES ---
 router.use(`${API_PREFIX}/users`, userRoutes);
 router.use(`${API_PREFIX}/categories`, categoryRoutes);
-// router.use(`${API_PREFIX}/products`, productRoutes);
+router.use(`${API_PREFIX}/category-types`, categoryTypeRoutes);
+router.use(`${API_PREFIX}/products`, productRoutes);
 // router.use(`${API_PREFIX}/orders`, orderRoutes);
 
 module.exports = router;

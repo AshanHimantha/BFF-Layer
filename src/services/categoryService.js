@@ -1,5 +1,5 @@
 const createApiClient = require('../utils/apiClient');
-
+const FormData = require('form-data');
 
 const PRODUCT_SERVICE_BASE_URL = process.env.PRODUCT_SERVICE_URL;
 const PRODUCT_SERVICE_VERSION = '/api/v1/categories';
@@ -37,10 +37,30 @@ const categoryService = {
   },
 
 
-  createCategory: async (authToken, categoryRequest) => {
+  createCategory: async (authToken, categoryRequest, file) => {
     try {
-      const response = await categoryServiceClient.post('', categoryRequest, {
-        headers: { Authorization: authToken }
+      const formData = new FormData();
+      
+      // Append each field from categoryRequest individually
+      Object.keys(categoryRequest).forEach(key => {
+        if (categoryRequest[key] !== undefined && categoryRequest[key] !== null) {
+          formData.append(key, categoryRequest[key]);
+        }
+      });
+      
+      // Append the image file if present
+      if (file) {
+        formData.append('image', file.buffer, {
+          filename: file.originalname,
+          contentType: file.mimetype
+        });
+      }
+
+      const response = await categoryServiceClient.post('', formData, {
+        headers: { 
+          Authorization: authToken,
+          ...formData.getHeaders()
+        }
       });
       return response.data.data || response.data;
     } catch (error) {
@@ -50,10 +70,30 @@ const categoryService = {
   },
 
 
-  updateCategory: async (authToken, categoryId, categoryRequest) => {
+  updateCategory: async (authToken, categoryId, categoryRequest, file) => {
     try {
-      const response = await categoryServiceClient.put(`/${categoryId}`, categoryRequest, {
-        headers: { Authorization: authToken }
+      const formData = new FormData();
+      
+      // Append each field from categoryRequest individually
+      Object.keys(categoryRequest).forEach(key => {
+        if (categoryRequest[key] !== undefined && categoryRequest[key] !== null) {
+          formData.append(key, categoryRequest[key]);
+        }
+      });
+      
+      // Append the image file if present
+      if (file) {
+        formData.append('image', file.buffer, {
+          filename: file.originalname,
+          contentType: file.mimetype
+        });
+      }
+
+      const response = await categoryServiceClient.put(`/${categoryId}`, formData, {
+        headers: { 
+          Authorization: authToken,
+          ...formData.getHeaders()
+        }
       });
       return response.data.data || response.data;
     } catch (error) {

@@ -12,7 +12,6 @@ const createApiClient = (baseURL) => {
     baseURL: baseURL,
     timeout: 15000, // Request timeout in ms (e.g., 15 seconds)
     headers: {
-      'Content-Type': 'application/json',
       'Accept': 'application/json',
     },
   });

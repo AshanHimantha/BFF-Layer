@@ -14,11 +14,17 @@ const errorHandler = (err, req, res, next) => {
             // Example: Invalid token (401), or a server error in the Spring API (500)
             statusCode = err.response.status;
             
-            // Extract the message from the backend response
+            // Extract the message and data from the backend response
             const backendData = err.response.data;
+            let responseData = {};
+            
             if (backendData && backendData.message) {
                 // Use the backend's message directly
                 message = backendData.message;
+                // Include the data field if it exists (validation errors, etc.)
+                if (backendData.data) {
+                    responseData.data = backendData.data;
+                }
             } else if (typeof backendData === 'string') {
                 message = backendData;
             } else {
@@ -26,6 +32,13 @@ const errorHandler = (err, req, res, next) => {
             }
             
             console.error(`[Downstream Error] Status: ${statusCode}, URL: ${err.config.url}, Data:`, err.response.data);
+            
+            // Send response with validation details if available
+            return res.status(statusCode).json({
+                success: false,
+                message: message,
+                ...responseData
+            });
         } else if (err.request) {
             // Case 2: The request was made, but NO RESPONSE was received
             // Example: The Spring API is offline or the URL is wrong.

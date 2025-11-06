@@ -39,21 +39,24 @@ const categoryService = {
 
   createCategory: async (authToken, categoryRequest, file) => {
     try {
+      console.log('=== CREATE CATEGORY DEBUG ===');
+      console.log('Category Request:', categoryRequest);
+      console.log('File:', file ? { originalname: file.originalname, mimetype: file.mimetype, size: file.size } : 'No file');
+      
       const formData = new FormData();
       
-      // Append each field from categoryRequest individually
+      // Append each field from categoryRequest individually (skip image field as it should be a file)
       Object.keys(categoryRequest).forEach(key => {
-        if (categoryRequest[key] !== undefined && categoryRequest[key] !== null) {
+        if (categoryRequest[key] !== undefined && categoryRequest[key] !== null && key !== 'image') {
+          console.log(`Appending field: ${key} = ${categoryRequest[key]}`);
           formData.append(key, categoryRequest[key]);
         }
       });
       
       // Append the image file if present
       if (file) {
-        formData.append('image', file.buffer, {
-          filename: file.originalname,
-          contentType: file.mimetype
-        });
+        console.log('Appending image file...');
+        formData.append('image', file.buffer, file.originalname);
       }
 
       const response = await categoryServiceClient.post('', formData, {
@@ -65,6 +68,7 @@ const categoryService = {
       return response.data.data || response.data;
     } catch (error) {
       console.error('CategoryService Error: Failed to create category.', error.message);
+      console.error('Full error:', error);
       throw error;
     }
   },
@@ -74,19 +78,16 @@ const categoryService = {
     try {
       const formData = new FormData();
       
-      // Append each field from categoryRequest individually
+      // Append each field from categoryRequest individually (skip image field as it should be a file)
       Object.keys(categoryRequest).forEach(key => {
-        if (categoryRequest[key] !== undefined && categoryRequest[key] !== null) {
+        if (categoryRequest[key] !== undefined && categoryRequest[key] !== null && key !== 'image') {
           formData.append(key, categoryRequest[key]);
         }
       });
       
       // Append the image file if present
       if (file) {
-        formData.append('image', file.buffer, {
-          filename: file.originalname,
-          contentType: file.mimetype
-        });
+        formData.append('image', file.buffer, file.originalname);
       }
 
       const response = await categoryServiceClient.put(`/${categoryId}`, formData, {

@@ -36,6 +36,10 @@ router.get('/:categoryId', requireAuth, async (req, res, next) => {
 // POST /api/categories - Create new category (SuperAdmins only)
 router.post('/', requireAuth, upload.single('image'), async (req, res, next) => {
   try {
+    console.log('=== CATEGORY POST ROUTE DEBUG ===');
+    console.log('req.body:', req.body);
+    console.log('req.file:', req.file ? { originalname: req.file.originalname, mimetype: req.file.mimetype, size: req.file.size } : 'No file');
+    
     const authToken = req.headers.authorization;
     const createdCategory = await categoryService.createCategory(authToken, req.body, req.file);
     res.status(201).json({ success: true, data: createdCategory });

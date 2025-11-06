@@ -51,6 +51,34 @@ router.put('/:categoryTypeId', requireAuth, async (req, res, next) => {
   }
 });
 
+// PATCH /api/v1/category-types/:categoryTypeId - Partially update category type (e.g., status only)
+router.patch('/:categoryTypeId', requireAuth, async (req, res, next) => {
+  try {
+    const authToken = req.headers.authorization;
+    const patchedCategoryType = await categoryTypeService.patchCategoryType(authToken, req.params.categoryTypeId, req.body);
+    res.status(200).json({ success: true, data: patchedCategoryType });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// PATCH /api/v1/category-types/:categoryTypeId/status - Update category type status
+router.patch('/:categoryTypeId/status', requireAuth, async (req, res, next) => {
+  try {
+    const authToken = req.headers.authorization;
+    const { status } = req.body;
+    
+    if (!status) {
+      return res.status(400).json({ success: false, message: 'Status is required' });
+    }
+    
+    const patchedCategoryType = await categoryTypeService.patchCategoryType(authToken, req.params.categoryTypeId, { status });
+    res.status(200).json({ success: true, data: patchedCategoryType });
+  } catch (error) {
+    next(error);
+  }
+});
+
 // DELETE /api/v1/category-types/:categoryTypeId - Delete category type
 router.delete('/:categoryTypeId', requireAuth, async (req, res, next) => {
   try {

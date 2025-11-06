@@ -63,6 +63,30 @@ const categoryTypeService = {
   },
 
 
+  patchCategoryType: async (authToken, categoryTypeId, partialUpdate) => {
+    try {
+      // Get current category type data
+      const currentData = await categoryTypeServiceClient.get(`/${categoryTypeId}`, {
+        headers: { Authorization: authToken }
+      });
+      
+      const currentCategoryType = currentData.data.data || currentData.data;
+      
+      // Merge partial update with current data
+      const mergedData = { ...currentCategoryType, ...partialUpdate };
+      
+      // Use PUT with merged data
+      const response = await categoryTypeServiceClient.put(`/${categoryTypeId}`, mergedData, {
+        headers: { Authorization: authToken }
+      });
+      return response.data.data || response.data;
+    } catch (error) {
+      console.error(`CategoryTypeService Error: Failed to patch category type ${categoryTypeId}.`, error.message);
+      throw error;
+    }
+  },
+
+
   deleteCategoryType: async (authToken, categoryTypeId) => {
     try {
       const response = await categoryTypeServiceClient.delete(`/${categoryTypeId}`, {

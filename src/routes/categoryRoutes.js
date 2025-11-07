@@ -59,6 +59,25 @@ router.put('/:categoryId', requireAuth, upload.single('image'), async (req, res,
   }
 });
 
+// PATCH /api/v1/categories/:categoryId/status - Update category status
+router.patch('/:categoryId/status', requireAuth, async (req, res, next) => {
+  try {
+    const authToken = req.headers.authorization;
+    const { status } = req.body;
+    
+    if (!status) {
+      return res.status(400).json({ success: false, message: 'Status is required' });
+    }
+    
+    const patchedCategory = await categoryService.patchCategory(authToken, req.params.categoryId, { status });
+    res.status(200).json({ success: true, data: patchedCategory });
+  } catch (error) {
+    next(error);
+  }
+});
+
+
+
 // DELETE /api/categories/:categoryId - Delete category
 router.delete('/:categoryId', requireAuth, async (req, res, next) => {
   try {

@@ -104,6 +104,23 @@ const categoryService = {
   },
 
 
+  patchCategory: async (authToken, categoryId, partialUpdate) => {
+    try {
+      // PATCH to /{categoryId}/status endpoint
+      const response = await categoryServiceClient.patch(`/${categoryId}/status`, partialUpdate, {
+        headers: { 
+          Authorization: authToken,
+          'Content-Type': 'application/json'
+        }
+      });
+      return response.data.data || response.data;
+    } catch (error) {
+      console.error(`CategoryService Error: Failed to patch category ${categoryId}.`, error.message);
+      throw error;
+    }
+  },
+
+
   deleteCategory: async (authToken, categoryId) => {
     try {
       const response = await categoryServiceClient.delete(`/${categoryId}`, {

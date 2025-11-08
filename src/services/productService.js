@@ -38,6 +38,18 @@ const productService = {
     }
   },
 
+  getProductByIdAdmin: async (authToken, productId) => {
+    try {
+      const response = await productServiceClient.get(`/admin/${productId}`, {
+        headers: { Authorization: authToken }
+      });
+      return response.data.data || response.data;
+    } catch (error) {
+      console.error(`ProductService Error: Failed to get product ${productId} (admin).`, error.message);
+      throw error;
+    }
+  },
+
 
   getProductsByCategory: async (authToken, categoryId, page = 0, size = 20) => {
     try {
@@ -70,7 +82,10 @@ const productService = {
   createProduct: async (authToken, productRequest) => {
     try {
       const response = await productServiceClient.post('', productRequest, {
-        headers: { Authorization: authToken }
+        headers: { 
+          Authorization: authToken,
+          ...productRequest.getHeaders()
+        }
       });
       return response.data.data || response.data;
     } catch (error) {

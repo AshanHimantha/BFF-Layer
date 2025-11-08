@@ -8,6 +8,7 @@ const userRoutes = require('./userRoutes');
 const categoryRoutes = require('./categoryRoutes');
 const categoryTypeRoutes = require('./categoryTypeRoutes');
 const productRoutes = require('./productRoutes');
+const productVariantRoutes = require('./productVariantRoutes');
 // const orderRoutes = require('./orderRoutes');
 
 // --- PUBLIC ROUTES ---
@@ -20,6 +21,7 @@ router.use(`${API_PREFIX}/users`, userRoutes);
 router.use(`${API_PREFIX}/categories`, categoryRoutes);
 router.use(`${API_PREFIX}/category-types`, categoryTypeRoutes);
 router.use(`${API_PREFIX}/products`, productRoutes);
+router.use(`${API_PREFIX}/product-variants`, productVariantRoutes);
 // router.use(`${API_PREFIX}/orders`, orderRoutes);
 
 module.exports = router;

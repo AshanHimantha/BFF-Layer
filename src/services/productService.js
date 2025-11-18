@@ -53,7 +53,7 @@ const productService = {
 
   getProductsByCategory: async (authToken, categoryId, page = 0, size = 20) => {
     try {
-      const response = await productServiceClient.get('/category/${categoryId}', {
+      const response = await productServiceClient.get(`/category/${categoryId}`, {
         headers: { Authorization: authToken },
         params: { page, size }
       });
@@ -121,17 +121,7 @@ const productService = {
   },
 
 
-  updateProductStock: async (authToken, productId, stock) => {
-    try {
-      const response = await productServiceClient.patch(`/${productId}/stock`, { stock }, {
-        headers: { Authorization: authToken }
-      });
-      return response.data.data || response.data;
-    } catch (error) {
-      console.error(`ProductService Error: Failed to update stock for product ${productId}.`, error.message);
-      throw error;
-    }
-  }
+
 };
 
 module.exports = productService;

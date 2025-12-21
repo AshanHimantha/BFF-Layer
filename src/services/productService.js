@@ -5,6 +5,8 @@ const PRODUCT_SERVICE_BASE_URL = process.env.PRODUCT_SERVICE_URL;
 const PRODUCT_SERVICE_VERSION = '/api/v1/products';
 const productServiceClient = createApiClient(PRODUCT_SERVICE_BASE_URL + PRODUCT_SERVICE_VERSION);
 
+const buildAuthHeaders = (authToken) => (authToken ? { Authorization: authToken } : {});
+
 const productService = {
 
   getAllProducts: async (authToken, page = 0, size = 20, sort = null, categoryId = null, search = null) => {
@@ -15,7 +17,7 @@ const productService = {
       if (search) params.search = search;
 
       const response = await productServiceClient.get('', {
-        headers: { Authorization: authToken },
+        headers: buildAuthHeaders(authToken),
         params
       });
       return response.data.data || response.data;
@@ -29,7 +31,7 @@ const productService = {
   getProductById: async (authToken, productId) => {
     try {
       const response = await productServiceClient.get(`/${productId}`, {
-        headers: { Authorization: authToken }
+        headers: buildAuthHeaders(authToken)
       });
       return response.data.data || response.data;
     } catch (error) {
@@ -41,7 +43,7 @@ const productService = {
   getProductByIdAdmin: async (authToken, productId) => {
     try {
       const response = await productServiceClient.get(`/admin/${productId}`, {
-        headers: { Authorization: authToken }
+        headers: buildAuthHeaders(authToken)
       });
       return response.data.data || response.data;
     } catch (error) {
@@ -54,7 +56,7 @@ const productService = {
   getProductsByCategory: async (authToken, categoryId, page = 0, size = 20) => {
     try {
       const response = await productServiceClient.get(`/category/${categoryId}`, {
-        headers: { Authorization: authToken },
+        headers: buildAuthHeaders(authToken),
         params: { page, size }
       });
       return response.data.data || response.data;
@@ -68,7 +70,7 @@ const productService = {
   searchProducts: async (authToken, query, page = 0, size = 20) => {
     try {
       const response = await productServiceClient.get('/search', {
-        headers: { Authorization: authToken },
+        headers: buildAuthHeaders(authToken),
         params: { query, page, size }
       });
       return response.data.data || response.data;
@@ -81,11 +83,13 @@ const productService = {
 
   createProduct: async (authToken, productRequest) => {
     try {
+      const headers = {
+        ...buildAuthHeaders(authToken),
+        ...(productRequest && typeof productRequest.getHeaders === 'function' ? productRequest.getHeaders() : {})
+      };
+
       const response = await productServiceClient.post('', productRequest, {
-        headers: { 
-          Authorization: authToken,
-          ...productRequest.getHeaders()
-        }
+        headers
       });
       return response.data.data || response.data;
     } catch (error) {
@@ -98,7 +102,7 @@ const productService = {
   updateProduct: async (authToken, productId, productRequest) => {
     try {
       const response = await productServiceClient.put(`/${productId}`, productRequest, {
-        headers: { Authorization: authToken }
+        headers: buildAuthHeaders(authToken)
       });
       return response.data.data || response.data;
     } catch (error) {
@@ -107,11 +111,40 @@ const productService = {
     }
   },
 
+  updateProductStock: async (authToken, productId, stock) => {
+    try {
+      const response = await productServiceClient.patch(`/${productId}/stock`, { stock }, {
+        headers: buildAuthHeaders(authToken)
+      });
+      return response.data.data || response.data;
+    } catch (error) {
+      console.error(`ProductService Error: Failed to update stock for product ${productId}.`, error.message);
+      throw error;
+    }
+  },
+
+  patchProduct: async (authToken, productId, patchRequest) => {
+    try {
+      const headers = buildAuthHeaders(authToken);
+      if (patchRequest && typeof patchRequest.getHeaders === 'function') {
+        Object.assign(headers, patchRequest.getHeaders());
+      }
+
+      const response = await productServiceClient.patch(`/${productId}`, patchRequest, {
+        headers
+      });
+      return response.data.data || response.data;
+    } catch (error) {
+      console.error(`ProductService Error: Failed to patch product ${productId}.`, error.message);
+      throw error;
+    }
+  },
+
 
   deleteProduct: async (authToken, productId) => {
     try {
       const response = await productServiceClient.delete(`/${productId}`, {
-        headers: { Authorization: authToken }
+        headers: buildAuthHeaders(authToken)
       });
       return response.data;
     } catch (error) {
